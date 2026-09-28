@@ -37,21 +37,21 @@ pnpm cf:pages:preview
 4. 选择新建的 `TV` 仓库和 `main` 分支，点击 **Begin setup**。
 5. 在构建设置中填写：
 
-   | 设置项 | 值 |
-   | --- | --- |
-   | Project name | `tv`（也可以使用你自己的 Pages 项目名，后续命令中的名称要一致） |
-   | Production branch | `main` |
-   | Framework preset | `None` 或 `Next.js` 均可，必须手动覆盖下面两项 |
-   | Build command | `pnpm cf:pages:build` |
-   | Build output directory | `.open-next/pages` |
-   | Root directory | `/` |
+   | 设置项                 | 值                                                              |
+   | ---------------------- | --------------------------------------------------------------- |
+   | Project name           | `tv`（也可以使用你自己的 Pages 项目名，后续命令中的名称要一致） |
+   | Production branch      | `main`                                                          |
+   | Framework preset       | `None` 或 `Next.js` 均可，必须手动覆盖下面两项                  |
+   | Build command          | `pnpm cf:pages:build`                                           |
+   | Build output directory | `.open-next/pages`                                              |
+   | Root directory         | `/`                                                             |
 
 6. 在 **Environment variables (advanced)** 中先添加：
 
-   | 变量 | 值 | 作用域 |
-   | --- | --- | --- |
-   | `NODE_VERSION` | `20` | Production、Preview |
-   | `PNPM_VERSION` | `10.14.0` | Production、Preview |
+   | 变量                       | 值        | 作用域              |
+   | -------------------------- | --------- | ------------------- |
+   | `NODE_VERSION`             | `20`      | Production、Preview |
+   | `PNPM_VERSION`             | `10.14.0` | Production、Preview |
    | `NEXT_PUBLIC_STORAGE_TYPE` | `upstash` | Production、Preview |
 
    `NEXT_PUBLIC_STORAGE_TYPE` 会在构建阶段被 Next.js 内联，不能只在部署后才添加。第一次构建可以先使用 `localstorage`，但生产环境建议使用 Upstash。
@@ -94,7 +94,7 @@ pnpm cf:pages:deploy
 - Build command：`pnpm cf:pages:build`
 - Build output directory：`.open-next/pages`
 
-`cf:pages:build` 会先运行 OpenNext，再把 Worker 运行时模块复制到 Pages 输出目录，并生成 `.open-next/pages/_worker.js`。这是 Pages Advanced Mode 所需的入口。
+`cf:pages:build` 会先运行 OpenNext，再通过 Wrangler 将运行时模块打包为 `.open-next/pages/_worker.js`，并复制静态资源。这样 Pages 上传目录不会包含 pnpm 的符号链接；`_worker.js` 是 Advanced Mode 所需的入口。
 
 ## 部署到 Cloudflare Workers
 

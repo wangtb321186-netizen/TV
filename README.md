@@ -106,7 +106,7 @@
 | 语言      | TypeScript 5                                                                                          |
 | 播放器    | [ArtPlayer](https://github.com/zhw2590582/ArtPlayer) · [HLS.js](https://github.com/video-dev/hls.js/) |
 | 代码质量  | ESLint 9 · Prettier 3 · Jest 29                                                                       |
-| 部署      | Docker · Cloudflare Workers/Pages（OpenNext）                                                          |
+| 部署      | Docker · Cloudflare Workers/Pages（OpenNext）                                                         |
 
 ## 🚀 部署
 
@@ -131,7 +131,7 @@ pnpm cf:pages:build
 pnpm cf:pages:deploy
 ```
 
-它会把 OpenNext Worker 和运行时模块准备到 `.open-next/pages`，并以 Pages Advanced Mode 的 `_worker.js` 运行。
+它会用 Wrangler 打包 OpenNext Worker，将可上传的 `_worker.js` 和静态资源放入 `.open-next/pages`，以 Pages Advanced Mode 运行。
 
 ### 🧩 OpenWrt 部署
 
