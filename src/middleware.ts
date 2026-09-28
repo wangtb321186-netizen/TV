@@ -5,7 +5,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAuthInfoFromCookie } from '@/lib/auth';
 import { isPublicAdminAllowed, isPublicMode } from '@/lib/auth-mode';
 
-export async function proxy(request: NextRequest) {
+// Keep the Edge middleware convention: Next.js 16's proxy convention selects
+// the Node.js runtime, which OpenNext for Cloudflare Workers cannot bundle.
+export async function middleware(request: NextRequest) {
   let pathname = request.nextUrl.pathname;
   let contentMode: string | null = null;
 
@@ -293,7 +295,7 @@ function shouldSkipAuth(pathname: string): boolean {
   return skipPaths.some((path) => pathname.startsWith(path));
 }
 
-// 配置 proxy 匹配规则
+// 配置 middleware 匹配规则
 export const config = {
   matcher: [
     '/((?!_next/static|_next/image|favicon.ico|login|warning|api/login|api/register|api/logout|api/cron|api/server-config|api/version|VERSION.txt|version.json).*)',

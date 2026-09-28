@@ -5,6 +5,12 @@
   "scripts": {
     "dev": "pnpm gen:manifest && pnpm gen:version && next dev -H 0.0.0.0",
     "build": "pnpm gen:manifest && pnpm gen:version && next build",
+    "cf:build": "opennextjs-cloudflare build --config wrangler.worker.jsonc",
+    "cf:preview": "pnpm cf:build && wrangler dev --config wrangler.worker.jsonc",
+    "cf:deploy": "pnpm cf:build && opennextjs-cloudflare deploy --config wrangler.worker.jsonc",
+    "cf:pages:build": "opennextjs-cloudflare build --config wrangler.worker.jsonc && node scripts/prepare-cloudflare-pages.js",
+    "cf:pages:preview": "pnpm cf:pages:build && wrangler pages dev .open-next/pages --compatibility-date=2025-09-23 --compatibility-flags=nodejs_compat --compatibility-flags=global_fetch_strictly_public",
+    "cf:pages:deploy": "pnpm cf:pages:build && wrangler pages deploy .open-next/pages --project-name tv",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint src --fix && pnpm format",
@@ -45,7 +51,7 @@
     "hls.js": "^1.6.10",
     "lucide-react": "^0.438.0",
     "media-icons": "^1.1.5",
-    "next": "^16.1.0",
+    "next": "^16.1.5",
     "next-themes": "^0.4.6",
     "nextjs-toploader": "^3.9.17",
     "nprogress": "^0.2.0",
@@ -66,6 +72,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.28.0",
     "@next/eslint-plugin-next": "^16.1.0",
+    "@opennextjs/cloudflare": "1.18.0",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@testing-library/jest-dom": "^5.17.0",
@@ -96,7 +103,8 @@
     "prettier-plugin-tailwindcss": "^0.6.12",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.8.3",
-    "webpack-obfuscator": "^3.5.1"
+    "webpack-obfuscator": "^3.5.1",
+    "wrangler": "4.65.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx}": [

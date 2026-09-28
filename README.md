@@ -106,11 +106,32 @@
 | 语言      | TypeScript 5                                                                                          |
 | 播放器    | [ArtPlayer](https://github.com/zhw2590582/ArtPlayer) · [HLS.js](https://github.com/video-dev/hls.js/) |
 | 代码质量  | ESLint 9 · Prettier 3 · Jest 29                                                                       |
-| 部署      | Docker                                                                                                |
+| 部署      | Docker · Cloudflare Workers/Pages（OpenNext）                                                          |
 
 ## 🚀 部署
 
-本项目**仅支持 Docker 或其他基于 Docker 的平台** 部署。
+本项目支持 Docker/VPS 和 Cloudflare Workers/Pages Advanced Mode（通过 OpenNext）部署。由于 DecoTV 包含动态 SSR、API Route Handler、鉴权中间件和服务端代理，不能使用 Cloudflare Pages 的纯静态模式；Pages 部署必须使用 Advanced Mode 的 `_worker.js`。
+
+### ☁️ Cloudflare Workers 部署
+
+完整步骤与环境变量说明见 [Cloudflare 部署指南](./docs/Cloudflare部署指南.md)。最小命令如下：
+
+```bash
+pnpm install
+pnpm cf:build
+pnpm cf:deploy
+```
+
+OpenNext 会把 Next.js 应用构建为 Cloudflare Worker，`wrangler.worker.jsonc` 已配置 Worker 入口和静态资源目录；默认的 `wrangler.jsonc` 用于 Pages。
+
+如果你使用 Cloudflare Pages 项目，请使用 Pages 专用命令：
+
+```bash
+pnpm cf:pages:build
+pnpm cf:pages:deploy
+```
+
+它会把 OpenNext Worker 和运行时模块准备到 `.open-next/pages`，并以 Pages Advanced Mode 的 `_worker.js` 运行。
 
 ### 🧩 OpenWrt 部署
 
