@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { builtinModules } = require('module');
 
 const projectRoot = path.resolve(__dirname, '..');
 const openNextRoot = path.join(projectRoot, '.open-next');
@@ -14,6 +15,31 @@ const wranglerCli = path.join(
   'wrangler.js',
 );
 const workerConfig = path.join(projectRoot, 'wrangler.worker.jsonc');
+const nodeBuiltins = new Set(
+  builtinModules.map((name) => name.replace(/^node:/, '')),
+);
+
+function prefixNodeBuiltinImports(workerPath) {
+  const source = fs.readFileSync(workerPath, 'utf8');
+  let prefixed = 0;
+
+  // Pages' final upload uses a separate Wrangler bundler. It can fail to
+  // resolve bare Node built-ins in OpenNext's already bundled Worker even when
+  // the project's nodejs_compat flag is enabled in the dashboard.
+  const updated = source.replace(
+    /^(\s*import\s+[^\r\n]*?\s+from\s+)(["'])([^"']+)\2/gm,
+    (statement, prefix, quote, specifier) => {
+      if (!nodeBuiltins.has(specifier)) return statement;
+      prefixed += 1;
+      return `${prefix}${quote}node:${specifier}${quote}`;
+    },
+  );
+
+  if (prefixed > 0) {
+    fs.writeFileSync(workerPath, updated, 'utf8');
+    console.log(`Prefixed ${prefixed} Node.js built-in import(s) for Pages.`);
+  }
+}
 
 function removeDanglingSymlinks(root) {
   if (!fs.existsSync(root)) return 0;
@@ -80,6 +106,7 @@ fs.renameSync(
   path.join(pagesRoot, 'worker.js'),
   path.join(pagesRoot, '_worker.js'),
 );
+prefixNodeBuiltinImports(path.join(pagesRoot, '_worker.js'));
 fs.rmSync(path.join(pagesRoot, 'README.md'), { force: true });
 fs.rmSync(path.join(pagesRoot, 'worker.js.map'), { force: true });
 
