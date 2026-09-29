@@ -14,6 +14,39 @@ const wranglerCli = path.join(
   'wrangler.js',
 );
 const workerConfig = path.join(projectRoot, 'wrangler.worker.jsonc');
+const pagesWranglerConfig = path.join(projectRoot, 'wrangler.jsonc');
+
+function ensurePagesCompatibilityConfig() {
+  // Keep Pages bindings dashboard-managed in the repository. Cloudflare's
+  // final Pages Functions bundler still reads the root config, so materialize
+  // a temporary config only inside the hosted Pages build environment.
+  if (!['1', 'true'].includes(process.env.CF_PAGES)) return false;
+  if (fs.existsSync(pagesWranglerConfig)) return false;
+
+  fs.writeFileSync(
+    pagesWranglerConfig,
+    `${JSON.stringify(
+      {
+        $schema: 'node_modules/wrangler/config-schema.json',
+        name: 'tv',
+        pages_build_output_dir: '.open-next/pages',
+        compatibility_date: '2025-09-23',
+        compatibility_flags: [
+          'nodejs_compat',
+          'global_fetch_strictly_public',
+        ],
+      },
+      null,
+      2,
+    )}\n`,
+    'utf8',
+  );
+
+  console.log(
+    'Created temporary Pages Wrangler config with Node.js compatibility flags.',
+  );
+  return true;
+}
 
 function removeDanglingSymlinks(root) {
   if (!fs.existsSync(root)) return 0;
@@ -48,6 +81,8 @@ if (!fs.existsSync(path.join(openNextRoot, 'worker.js'))) {
     'OpenNext worker not found. Run `opennextjs-cloudflare build` first.',
   );
 }
+
+ensurePagesCompatibilityConfig();
 
 fs.rmSync(pagesRoot, { recursive: true, force: true });
 fs.mkdirSync(pagesRoot, { recursive: true });
