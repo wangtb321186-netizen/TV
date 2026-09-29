@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
         ? formatResolutionLabel(resolutionFilter.minLevel)
         : '',
       resolutionFilterStrict: resolutionFilter.strict,
-      storageType: process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage',
+      storageType: process.env.NEXT_PUBLIC_STORAGE_TYPE || 'kv',
       message: authInfo ? '服务器运行正常' : '服务器运行正常，请先登录',
     },
     {

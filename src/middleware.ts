@@ -77,7 +77,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage';
+  const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'kv';
 
   if (!process.env.PASSWORD) {
     // 如果没有设置密码，重定向到警告页面
@@ -265,7 +265,7 @@ function shouldSkipAuth(pathname: string): boolean {
   // 本地模式 (无数据库) 下，允许跳过 admin API 鉴权
   // 这是为了解决"鸡生蛋"问题：用户需要先配置系统才能登录，但登录又需要先有配置
   // 安全性说明：仅当 STORAGE_TYPE=localstorage 且没有设置数据库连接时才生效
-  const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage';
+  const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'kv';
   const hasRedis = !!(process.env.REDIS_URL || process.env.KV_REST_API_URL);
 
   if (

@@ -97,7 +97,7 @@ export async function resolveServerDoubanProxyConfig(
     };
   }
 
-  const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage';
+  const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'kv';
   let proxyType = process.env.NEXT_PUBLIC_DOUBAN_PROXY_TYPE || 'auto';
   let proxyUrl = process.env.NEXT_PUBLIC_DOUBAN_PROXY || '';
 

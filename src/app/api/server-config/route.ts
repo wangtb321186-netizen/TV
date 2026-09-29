@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
 
   const result = {
     SiteName: config.SiteConfig.SiteName,
-    StorageType: process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage',
+    StorageType: process.env.NEXT_PUBLIC_STORAGE_TYPE || 'kv',
     AuthMode: getAuthMode(),
     PublicAllowAdmin: isPublicAdminAllowed(),
     Version: CURRENT_VERSION,

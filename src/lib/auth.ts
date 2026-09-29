@@ -117,7 +117,7 @@ export function verifyApiAuth(request: NextRequest): {
   isOwner: boolean;
   isLocalMode: boolean;
 } {
-  const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage';
+  const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'kv';
   const hasRedis = !!(process.env.REDIS_URL || process.env.KV_REST_API_URL);
   const isLocalMode = storageType === 'localstorage' && !hasRedis;
 

@@ -85,18 +85,20 @@ const STORAGE_TYPE = (() => {
     (typeof window !== 'undefined' &&
       (window as any).RUNTIME_CONFIG?.STORAGE_TYPE) ||
     (process.env.NEXT_PUBLIC_STORAGE_TYPE as
+      | 'kv'
       | 'localstorage'
       | 'redis'
       | 'upstash'
       | 'kvrocks'
       | undefined) ||
     (process.env.STORAGE_TYPE as
+      | 'kv'
       | 'localstorage'
       | 'redis'
       | 'upstash'
       | 'kvrocks'
       | undefined) ||
-    'localstorage';
+    'kv';
   return raw;
 })();
 

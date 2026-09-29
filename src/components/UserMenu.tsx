@@ -42,7 +42,7 @@ export const UserMenu: React.FC = () => {
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [isVersionPanelOpen, setIsVersionPanelOpen] = useState(false);
   const [authInfo, setAuthInfo] = useState<AuthInfo | null>(null);
-  const [storageType, setStorageType] = useState<string>('localstorage');
+  const [storageType, setStorageType] = useState<string>('kv');
   const [authMode, setAuthMode] = useState<'password' | 'public'>('password');
   const [publicAllowAdmin, setPublicAllowAdmin] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -173,7 +173,7 @@ export const UserMenu: React.FC = () => {
       setAuthInfo(auth);
 
       const type =
-        (window as any).RUNTIME_CONFIG?.STORAGE_TYPE || 'localstorage';
+        (window as any).RUNTIME_CONFIG?.STORAGE_TYPE || 'kv';
       setStorageType(type);
       setAuthMode(
         (window as any).RUNTIME_CONFIG?.AUTH_MODE === 'public'

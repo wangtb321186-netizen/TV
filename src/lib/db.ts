@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { AdminConfig } from './admin.types';
+import { KVStorage } from './kv.db';
 import { KvrocksStorage } from './kvrocks.db';
 import { MemoryStorage } from './memory.db';
 import { RedisStorage } from './redis.db';
@@ -13,18 +14,21 @@ import {
 } from './types';
 import { UpstashRedisStorage } from './upstash.db';
 
-// storage type 常量: 'localstorage' | 'redis' | 'upstash'，默认 'localstorage'
+// storage type 常量: 'kv' | 'localstorage' | 'redis' | 'upstash'，默认 'kv'
 const STORAGE_TYPE =
   (process.env.NEXT_PUBLIC_STORAGE_TYPE as
+    | 'kv'
     | 'localstorage'
     | 'redis'
     | 'upstash'
     | 'kvrocks'
-    | undefined) || 'localstorage';
+    | undefined) || 'kv';
 
 // 创建存储实例
 function createStorage(): IStorage {
   switch (STORAGE_TYPE) {
+    case 'kv':
+      return new KVStorage();
     case 'redis':
       return new RedisStorage();
     case 'upstash':

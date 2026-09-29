@@ -90,7 +90,7 @@ function RegisterPageClient() {
   const [loading, setLoading] = useState(false);
   const [captchaLoading, setCaptchaLoading] = useState(false);
   const [registrationEnabled, setRegistrationEnabled] = useState(false);
-  const [storageType, setStorageType] = useState('localstorage');
+  const [storageType, setStorageType] = useState('kv');
 
   const { siteName } = useSite();
 
@@ -120,7 +120,7 @@ function RegisterPageClient() {
     fetch('/api/server-config')
       .then((res) => res.json())
       .then((data) => {
-        const storage = data.StorageType || 'localstorage';
+        const storage = data.StorageType || 'kv';
         const enabled = data.EnableRegistration === true;
         setRegistrationEnabled(enabled);
         setStorageType(storage);
@@ -132,7 +132,7 @@ function RegisterPageClient() {
       .catch(() => {
         // 失败时使用默认值
         setRegistrationEnabled(false);
-        setStorageType('localstorage');
+        setStorageType('kv');
       });
   }, []);
 

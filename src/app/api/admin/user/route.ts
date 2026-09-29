@@ -376,7 +376,7 @@ export async function POST(request: NextRequest) {
         }
         if (
           registrationEnabled &&
-          (process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage') ===
+          (process.env.NEXT_PUBLIC_STORAGE_TYPE || 'kv') ===
             'localstorage'
         ) {
           return NextResponse.json(

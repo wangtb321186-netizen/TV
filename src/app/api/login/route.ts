@@ -14,14 +14,15 @@ import { getEffectiveRequestOrigin } from '@/lib/request-protocol';
 
 export const runtime = 'nodejs';
 
-// 读取存储类型环境变量，默认 localstorage
+// 读取存储类型环境变量，默认 Cloudflare KV
 const STORAGE_TYPE =
   (process.env.NEXT_PUBLIC_STORAGE_TYPE as
+    | 'kv'
     | 'localstorage'
     | 'redis'
     | 'upstash'
     | 'kvrocks'
-    | undefined) || 'localstorage';
+    | undefined) || 'kv';
 
 function withCors(response: NextResponse, req: NextRequest): NextResponse {
   const origin = req.headers.get('origin');

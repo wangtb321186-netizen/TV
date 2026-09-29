@@ -11,7 +11,7 @@ DecoTV 不是纯静态 Next.js 应用，包含动态页面、API Route Handler�
 - Node.js 20 或更高版本
 - pnpm 10
 - 一个 Cloudflare 账号，并在本机执行 `wrangler login`
-- 一个 Upstash Redis 数据库（推荐生产环境使用）
+- 一个 Cloudflare KV namespace（生产环境绑定名必须为 `DECOTV_KV`）
 
 Cloudflare 的构建环境是 Linux。OpenNext 在 Windows 上可能遇到符号链接权限问题，建议在 WSL、CI 或 Cloudflare 构建环境中执行构建。
 
@@ -52,13 +52,21 @@ pnpm cf:pages:preview
    | -------------------------- | --------- | ------------------- |
    | `NODE_VERSION`             | `20`      | Production、Preview |
    | `PNPM_VERSION`             | `10.14.0` | Production、Preview |
-   | `NEXT_PUBLIC_STORAGE_TYPE` | `upstash` | Production、Preview |
+   | `NEXT_PUBLIC_STORAGE_TYPE` | `kv`      | Production、Preview |
 
-   `NEXT_PUBLIC_STORAGE_TYPE` 会在构建阶段被 Next.js 内联，不能只在部署后才添加。第一次构建可以先使用 `localstorage`，但生产环境建议使用 Upstash。
+   `NEXT_PUBLIC_STORAGE_TYPE` 会在构建阶段被 Next.js 内联，不能只在部署后才添加。`kv` 模式要求下一步配置 `DECOTV_KV` 绑定。
 
 7. 点击 **Save and Deploy**。构建日志中应能看到 `Cloudflare Pages output prepared at .open-next/pages`，并且输出目录中存在 `_worker.js`。这表示已使用 Pages Advanced Mode；不要改成纯静态导出或把输出目录改为 `out`。
 
-### 2. 配置运行时变量和 Secrets
+### 2. 配置 KV 绑定、运行时变量和 Secrets
+
+进入 **Workers & Pages → tv → Settings → Functions → Bindings**，分别在 Production 和 Preview 环境添加 KV namespace：
+
+| Variable name | Binding type | Namespace |
+| ------------- | ------------ | --------- |
+| `DECOTV_KV`   | KV namespace  | 选择要保存 DecoTV 数据的 namespace |
+
+代码会将站点配置、用户、收藏、播放记录、搜索历史和跳过片段配置保存到这个 namespace。绑定名必须完全匹配 `DECOTV_KV`，否则 API 会返回明确的配置错误。
 
 部署完成后进入 **Workers & Pages → tv → Settings → Variables and Secrets**，在 Production 和 Preview 环境分别添加应用配置。密码、令牌等敏感值请选择 **Encrypt**：
 
@@ -115,17 +123,17 @@ pnpm cf:deploy
 
 ## 环境变量和 Secrets
 
-`NEXT_PUBLIC_STORAGE_TYPE` 会被 Next.js 在构建时读取，必须在 `pnpm cf:pages:build` 之前设置；生产环境推荐使用 Upstash REST 存储：
+`NEXT_PUBLIC_STORAGE_TYPE` 会被 Next.js 在构建时读取，必须在 `pnpm cf:pages:build` 之前设置。Cloudflare 部署使用 KV：
 
 ```powershell
-$env:NEXT_PUBLIC_STORAGE_TYPE = "upstash"
+$env:NEXT_PUBLIC_STORAGE_TYPE = "kv"
 pnpm cf:pages:build
 ```
 
 在 WSL 或 Linux shell 中使用：
 
 ```bash
-export NEXT_PUBLIC_STORAGE_TYPE=upstash
+export NEXT_PUBLIC_STORAGE_TYPE=kv
 pnpm cf:pages:build
 ```
 
@@ -135,8 +143,6 @@ pnpm cf:pages:build
 wrangler pages secret put USERNAME --project-name tv
 wrangler pages secret put PASSWORD --project-name tv
 wrangler pages secret put AUTH_SECRET --project-name tv
-wrangler pages secret put UPSTASH_URL --project-name tv
-wrangler pages secret put UPSTASH_TOKEN --project-name tv
 ```
 
 以 `NEXT_PUBLIC_` 开头的变量会在构建时内联；修改后必须重新执行 `pnpm cf:pages:build` 并部署。其他运行时配置可以放在 Pages Variables 中，例如 `PUBLIC_ALLOW_ADMIN`、`SITE_BASE`、`TMDB_API_KEY`、`DANDANPLAY_APP_ID` 和 `DANDANPLAY_APP_SECRET`。敏感值优先使用 `wrangler pages secret put`；如果部署 Workers，则对应使用 `wrangler secret put`。
@@ -147,7 +153,7 @@ wrangler pages secret put UPSTASH_TOKEN --project-name tv
 
 - FFmpeg 下载依赖 Node.js 的 `child_process`、本地文件系统和长时间运行的进程，Cloudflare Workers 不支持这些能力。浏览器分片下载可继续使用，FFmpeg 下载会返回不支持提示；需要 FFmpeg 时请使用 Docker/VPS 部署。
 - Worker 本地文件系统不是持久化磁盘，私人影库的本地目录扫描和本地媒体文件存储不适合 Workers。请使用可通过网络访问的 OpenList、Emby 或 Jellyfin。
-- 生产环境不要使用默认的 `localstorage` 存储。Worker 实例之间不共享内存，用户数据和后台配置应使用 `upstash`。
+- 生产环境不要使用 `localstorage` 存储。Worker 实例之间不共享内存，用户数据和后台配置应使用 Cloudflare KV，并确保 `DECOTV_KV` 已绑定。
 - Cloudflare Workers 有请求时长、CPU、响应体和外部请求限制。大型媒体转码、长时间扫描和大文件下载应放到专用服务器。
 
 ## 常用命令
