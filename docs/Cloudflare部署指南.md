@@ -58,13 +58,13 @@ pnpm cf:pages:preview
 
 7. 在 **Settings → Functions → Compatibility flags** 中，为 Production 和 Preview 都添加 `nodejs_compat` 与 `global_fetch_strictly_public`。这两个标记用于 Pages 最后打包 OpenNext Worker；没有它们时，Wrangler 会把 `fs`、`path`、`crypto` 等 Node.js 内置模块当成无法解析的依赖。
 
-   仓库不提交根目录 `wrangler.jsonc`，因此 KV 绑定仍由本页面的控制台设置管理。`cf:pages:build` 在 Cloudflare 的构建环境中会临时生成同样的兼容配置，不会覆盖仓库或锁定控制台绑定。
+   仓库不提交、也不会在构建时生成根目录 `wrangler.jsonc`。这是有意的：Pages 一旦使用 Wrangler 配置文件，该文件就会成为项目配置源，控制台里的绑定会变成只读。这里的 `wrangler.worker.jsonc` 只供 OpenNext 生成 Worker 使用，不会接管 Pages 控制台配置。
 
 8. 点击 **Save and Deploy**。构建日志中应能看到 `Cloudflare Pages output prepared at .open-next/pages`，并且输出目录中存在 `_worker.js`。这表示已使用 Pages Advanced Mode；不要改成纯静态导出或把输出目录改为 `out`。
 
 ### 2. 配置 KV 绑定、运行时变量和 Secrets
 
-进入 **Workers & Pages → tv → Settings → Functions → Bindings**，分别在 Production 和 Preview 环境添加 KV namespace：
+进入 **Workers & Pages → tv → Settings → Bindings**，分别在 Production 和 Preview 环境添加 KV namespace：
 
 | Variable name | Binding type | Namespace |
 | ------------- | ------------ | --------- |
