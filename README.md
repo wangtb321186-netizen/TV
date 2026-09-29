@@ -122,7 +122,7 @@ pnpm cf:build
 pnpm cf:deploy
 ```
 
-OpenNext 会把 Next.js 应用构建为 Cloudflare Worker，`wrangler.worker.jsonc` 已配置 Worker 入口和静态资源目录；默认的 `wrangler.jsonc` 用于 Pages。
+OpenNext 会把 Next.js 应用构建为 Cloudflare Worker，`wrangler.worker.jsonc` 已配置 Worker 入口和静态资源目录。Pages 项目的构建设置、环境变量和 KV 绑定在 Cloudflare 控制台管理。
 
 如果你使用 Cloudflare Pages 项目，请使用 Pages 专用命令：
 

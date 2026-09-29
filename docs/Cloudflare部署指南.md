@@ -119,7 +119,7 @@ pnpm cf:deploy
 - Deploy command：`pnpm exec wrangler deploy`
 - Root directory：仓库根目录
 
-仓库中的 `wrangler.worker.jsonc` 已指定 `.open-next/worker.js` 为 Worker 入口，并将 `.open-next/assets` 作为静态资源目录；默认的 `wrangler.jsonc` 是 Pages 项目配置。
+仓库中的 `wrangler.worker.jsonc` 已指定 `.open-next/worker.js` 为 Worker 入口，并将 `.open-next/assets` 作为静态资源目录。Pages 项目不使用根目录 Wrangler 配置文件，因此 Pages 的环境变量和 KV 绑定可以直接在 Cloudflare 控制台管理。
 
 ## 环境变量和 Secrets
 
