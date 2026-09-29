@@ -56,7 +56,7 @@ pnpm cf:pages:preview
 
    `NEXT_PUBLIC_STORAGE_TYPE` 会在构建阶段被 Next.js 内联，不能只在部署后才添加。`kv` 模式要求下一步配置 `DECOTV_KV` 绑定。
 
-7. 在 **Settings → Functions → Compatibility flags** 中，为 Production 和 Preview 都添加 `nodejs_compat` 与 `global_fetch_strictly_public`。这两个标记用于 Pages 最后打包 OpenNext Worker；没有它们时，Wrangler 会把 `fs`、`path`、`crypto` 等 Node.js 内置模块当成无法解析的依赖。
+7. 在 **Settings → Functions → Compatibility flags** 中，为 Production 和 Preview 都添加 `nodejs_compat`。这个标记用于 Pages 最后打包 OpenNext Worker；没有它时，Wrangler 会把 `fs`、`path`、`crypto` 等 Node.js 内置模块当成无法解析的依赖。
 
    仓库不提交、也不会在构建时生成根目录 `wrangler.jsonc`。这是有意的：Pages 一旦使用 Wrangler 配置文件，该文件就会成为项目配置源，控制台里的绑定会变成只读。这里的 `wrangler.worker.jsonc` 只供 OpenNext 生成 Worker 使用，不会接管 Pages 控制台配置。
 

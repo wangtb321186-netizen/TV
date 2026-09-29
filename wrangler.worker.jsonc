@@ -3,7 +3,7 @@
   "name": "decotv",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-09-23",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "compatibility_flags": ["nodejs_compat"],
   // Configure this binding in the Workers/Pages dashboard for each environment.
   // Do not add a placeholder namespace ID here; the dashboard binding is used by Pages.
   "assets": {

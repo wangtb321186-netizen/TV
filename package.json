@@ -9,7 +9,7 @@
     "cf:preview": "pnpm cf:build && wrangler dev --config wrangler.worker.jsonc",
     "cf:deploy": "pnpm cf:build && opennextjs-cloudflare deploy --config wrangler.worker.jsonc",
     "cf:pages:build": "opennextjs-cloudflare build --config wrangler.worker.jsonc && node scripts/prepare-cloudflare-pages.js",
-    "cf:pages:preview": "pnpm cf:pages:build && wrangler pages dev .open-next/pages --compatibility-date=2025-09-23 --compatibility-flags=nodejs_compat --compatibility-flags=global_fetch_strictly_public",
+    "cf:pages:preview": "pnpm cf:pages:build && wrangler pages dev .open-next/pages --compatibility-date=2025-09-23 --compatibility-flags=nodejs_compat",
     "cf:pages:deploy": "pnpm cf:pages:build && wrangler pages deploy .open-next/pages --project-name tv",
     "start": "next start",
     "lint": "next lint",
